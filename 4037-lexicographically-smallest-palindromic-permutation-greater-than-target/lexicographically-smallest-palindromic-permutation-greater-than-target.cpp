@@ -1,104 +1,88 @@
 class Solution {
 public:
-    string isPossible(int n, vector<int> freq, string cur, char& mid,
-                      string& target) {
-        // this gives the max palindrome achievable with the current prefix
-        //(descending order)
-        for (int i = 25; i >= 0; i--) {
-            while (freq[i]) {
-                cur += (char)('a' + i);
-                freq[i]--;
-            }
-        }
-        if (mid != '#') {
-            // odd-length palindrome: left half + mid + reverse(left half)
-            string temp = cur;
-            cur += mid;
-            reverse(temp.begin(), temp.end());
-            cur.append(temp.begin(), temp.end());
-        } else {
-            // even-length palindrome: left half + reverse(left half)
-            string temp = cur;
-            reverse(temp.begin(), temp.end());
-            cur.append(temp.begin(), temp.end());
-        }
-        // feasibility check: only valid if this (largest possible) candidate
-        // beats target
-        return cur > target ? cur : "";
-    }
     string lexPalindromicPermutation(string s, string target) {
-        int n = s.size();
-        vector<int> freq(26, 0);
-        if (n == 1) {
-            // if size is 1 then direct compare
-            if (s > target)
-                return s;
-            else
-                return "";
-        }
-        for (char c : s)
-            freq[c - 'a']++; // freq Track
+        int freq[26] = {0};
 
-        char mid = '#';
-        int oddCount = 0;
+        for (char c : s)
+            freq[c - 'a']++;
+
+        char center = 0;
 
         for (int i = 0; i < 26; i++) {
             if (freq[i] % 2) {
-                // odd count -> this becomes the middle character
-                mid = (char)('a' + i);
+                if (center != 0)
+                    return "";
+
+                center = 'a' + i;
                 freq[i]--;
-                oddCount++;
             }
-
-            freq[i] /= 2; // each char used freq[i]/2 times in the left half
-
-            if (oddCount >= 2)
-                return ""; // more than one odd-frequency char -> can't form a
-                           // palindrome
         }
 
-        n /= 2; // we only need to construct the left half now
-        string res = "", prefix = "";
+        int sz = s.length();
+        int half = sz / 2;
 
-        // greedily build the left half, position by position
-        for (int i = 0; i < n; i++) {
+        for (int i = 0; i < half; i++)
+            freq[target[i] - 'a'] -= 2;
 
-            string cur = prefix;
-            bool isThereAny = false;
+        if (check(freq)) {
+            string head = target.substr(0, half);
+            string rev = head;
+            reverse(rev.begin(), rev.end());
 
-            // try smallest character first ('a' -> 'z')
-            for (int j = 0; j < 26; j++) {
-                if (freq[j]) {
-                    freq[j]--;
-                    cur += (char)('a' + j);
+            string tail = "";
 
-                    // check if this prefix can still lead to a palindrome >
-                    // target
-                    string isPos = isPossible(n, freq, cur, mid, target);
+            if (center != 0)
+                tail += center;
 
-                    if (isPos != "") {
-                        prefix = cur; // keep this character, lock in the prefix
-                        isThereAny = true;
+            tail += rev;
 
-                        if (res == "")
-                            res = isPos;
-                        else
-                            res = min(
-                                res,
-                                isPos); // track smallest valid candidate seen
-                        break;
-                    }
+            if (tail > target.substr(half))
+                return head + tail;
+        }
 
-                    // this character doesn't work, undo and try the next one
-                    freq[j]++;
-                    cur.pop_back();
+        for (int i = half - 1; i >= 0; i--) {
+
+            char w = target[i];
+            freq[w - 'a'] += 2;
+
+            if (!check(freq))
+                continue;
+
+            for (int j = w - 'a' + 1; j < 26; j++) {
+
+                if (freq[j] < 2)
+                    continue;
+
+                freq[j] -= 2;
+
+                string result = target.substr(0, i + 1);
+                result[i] = 'a' + j;
+
+                for (int k = 0; k < 26; k++) {
+                    int cnt = freq[k] / 2;
+                    result.append(cnt, 'a' + k);
                 }
-            }
 
-            if (!isThereAny)
-                return ""; // no character works at this position -> impossible
+                string part = result;
+                reverse(part.begin(), part.end());
+
+                if (center != 0)
+                    result += center;
+
+                result += part;
+
+                return result;
+            }
         }
 
-        return res;
+        return "";
+    }
+
+    bool check(int f[]) {
+        for (int i = 0; i < 26; i++)
+            if (f[i] < 0)
+                return false;
+
+        return true;
     }
 };
