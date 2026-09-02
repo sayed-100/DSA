@@ -5,6 +5,11 @@ public:
         int ans = INT_MAX;
         while (low <= high)
         {
+            // 1. If strictly sorted, the first element is the minimum of this range
+            if (nums[low] < nums[high]) {
+                ans = min(ans, nums[low]);
+                break;
+            }
             int mid  = low + ( high - low ) / 2;
            
             //duplicate present in array at low, mid and high then shrink
@@ -13,6 +18,12 @@ public:
                 ans = min(ans, nums[low]);
                 low++;
                 high--;
+                continue;
+            }
+            // 3. Two-way duplicates at left boundary: safely skip one element
+            if (nums[low] == nums[mid]) {
+                ans = min(ans, nums[low]);
+                low++;
                 continue;
             }
             //left sorted
