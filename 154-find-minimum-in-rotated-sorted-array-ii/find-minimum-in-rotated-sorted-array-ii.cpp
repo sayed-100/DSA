@@ -5,12 +5,6 @@ public:
         int ans = INT_MAX;
         while (low <= high)
         {
-             //Already sorted then nums[low] is the minimum value
-            if(nums[low] < nums[high])
-            {
-                ans = min( ans, nums[low]);
-                break;
-            }
             int mid  = low + ( high - low ) / 2;
            
             //duplicate present in array at low, mid and high then shrink
