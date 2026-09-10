@@ -10,8 +10,9 @@ public:
             {
                 cnt_balls++;
                 last_ball = position[i];
+                if(cnt_balls == balls) return true;
             }
-            if(cnt_balls >= balls) return true;
+           
         }
         return false;
     }
