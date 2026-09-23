@@ -1,8 +1,8 @@
 class Solution {
 public:
     vector<int> rowAndMaximumOnes(vector<vector<int>>& mat) {
-        int maxOnes = 0;
-        int rowIndex = 0;
+        int maxOnes = -1;
+        int rowIndex = -1;
 
         for (int i = 0; i < mat.size(); i++) {
             int ones = 0;
