@@ -12,10 +12,11 @@ public:
             {
                 if(st.empty()) return false;
                 char top = st.top();
-                st.pop();
+                
                 if(ch == ')' && top != '(') return false;
                 if(ch == '}' && top != '{') return false;
                 if(ch == ']' && top != '[') return false;
+                st.pop();
             }
         }
         return st.empty();
