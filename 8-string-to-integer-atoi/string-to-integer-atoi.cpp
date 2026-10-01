@@ -4,30 +4,35 @@ public:
         int sign = 1;
         long ans = 0;
         int i = 0;
-        // Whitespace
-        while(i < s.length() && s[i] == ' ')
-        {
+
+        // Skip whitespace
+        while (i < s.length() && s[i] == ' ') {
             i++;
         }
-        // signedness
-        if(i < s.length() && (s[i] == '+' || s[i] == '-') )
-        {   if ( s[i] == '-' )
-            {
+
+        // Handle sign
+        if (i < s.length() && (s[i] == '+' || s[i] == '-')) {
+            if (s[i] == '-') {
                 sign = -1;
             }
             i++;
         }
-        while( i < s.length() && ( s[i] >= '0' && s[i] <= '9') )
-        {
+
+        // Convert digits
+        while (i < s.length() && s[i] >= '0' && s[i] <= '9') {
             int digit = s[i] - '0';
+
+            // Check overflow
+            if (ans > INT_MAX / 10 ||
+                (ans == INT_MAX / 10 &&
+                 digit > (sign == 1 ? 7 : 8))) {
+                return (sign == 1) ? INT_MAX : INT_MIN;
+            }
+
             ans = ans * 10 + digit;
-            if(ans * sign > INT_MAX )
-            return INT_MAX;
-            else if(ans * sign < INT_MIN)
-            return INT_MIN;
             i++;
         }
-        return ans * sign;
 
+        return ans * sign;
     }
 };
