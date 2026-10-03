@@ -1,30 +1,32 @@
 class Solution {
 private:
-    void solve(int cnt1, int cnt2, int n, vector<string>& ans, string& op,
-               int ind) {
-        if (ind >= n * 2) {
-            ans.push_back(op);
+    vector<string> ans;
+    void solve(string &curr, int n, int open, int close) 
+    {
+       if(curr.length() == 2*n )
+       {
+            ans.push_back(curr);
             return;
-        }
-        if (cnt1 < n and ind < n * 2 - 1) {
-            op += '(';
-            solve(cnt1 + 1, cnt2, n, ans, op, ind + 1);
-            op.pop_back();
-        }
-
-        if (cnt2 < cnt1 and ind > 0) {
-            op += ')';
-
-            solve(cnt1, cnt2 + 1, n, ans, op, ind + 1);
-            op.pop_back();
-        }
+       }
+       if(open < n)
+       {
+            curr.push_back('(');
+            solve(curr, n, open+1, close);
+            curr.pop_back();
+       }
+       if(close < open)
+       {
+            curr.push_back(')');
+            solve(curr, n, open, close+1);
+            curr.pop_back();
+       }
     }
 
 public:
     vector<string> generateParenthesis(int n) {
-        string op = "";
-        vector<string> ans;
-        solve(0, 0, n, ans, op, 0);
+        string curr = "";
+        int open = 0, close = 0;
+        solve(curr, n, open, close);
         return ans;
     }
 };
