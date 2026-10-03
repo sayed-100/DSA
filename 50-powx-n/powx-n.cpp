@@ -17,7 +17,7 @@ public:
                 num = num - 1;
             }
         }
-        if(n < 0) ans = (double)1.0 / (double) ans;
+        if(n < 0) ans = 1.0 /  ans;
         return ans;
 
     }
