@@ -1,41 +1,29 @@
 class Solution {
 public:
     int numOfWays(vector<int>& nums) {
-        int m = nums.size();
-        // Table of Pascal's triangle
-        table.resize(m + 1);
-        for(int i = 0; i < m + 1; ++i) {
-            table[i] = vector<long long>(i + 1, 1);
-            for(int j = 1; j < i; ++j) {
-                table[i][j] = (table[i - 1][j - 1] + table[i - 1][j]) % mod;
-            }
-        }
-        
-        return (dfs(nums) - 1) % mod;
-    }
-    
-private:
-    vector<vector<long long>> table;
-    long long mod = 1e9 + 7;
-    
-    long long dfs(vector<int> &nums){
-        int m = nums.size();
-        if(m < 3) {
-            return 1;
-        }
+        const long long MOD = 1e9 + 7;
+        int n = nums.size();
+        vector<int> born(n + 2, -1);  // insertion time of each value; the walls 0 and n + 1 come before everything
+        for (int i = 0; i < n; ++i) born[nums[i]] = i;
 
-        vector<int> leftNodes, rightNodes;
-        for(int i = 1; i < m; ++i){
-            if (nums[i] < nums[0]) {
-                leftNodes.push_back(nums[i]);
-            } else {
-                rightNodes.push_back(nums[i]);
+        long long fact = 1, sizes = 1;  // n! and the product of subtree sizes, mod p
+        for (int k = 2; k <= n; ++k) fact = fact * k % MOD;
+        vector<int> stack = {0};  // values with increasing insertion times
+        for (int v = 1; v <= n + 1; ++v) {
+            while (born[stack.back()] > born[v]) {  // v is the right wall of the value on top
+                stack.pop_back();
+                sizes = sizes * (v - stack.back() - 1) % MOD;  // and the value below it is the left wall
             }
+            stack.push_back(v);
         }
-		
-        long long leftWays = dfs(leftNodes) % mod;
-        long long rightWays = dfs(rightNodes) % mod;
-		
-        return (((leftWays * rightWays) % mod) * table[m - 1][leftNodes.size()]) % mod;
+        return (fact * power(sizes, MOD - 2, MOD) - 1 + MOD) % MOD;  // n! / sizes - 1
+    }
+
+private:
+    long long power(long long b, long long e, long long m) {
+        long long r = 1;
+        for (b %= m; e; e >>= 1, b = b * b % m)
+            if (e & 1) r = r * b % m;
+        return r;
     }
 };
