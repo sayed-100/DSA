@@ -8,7 +8,7 @@ private:
             if(sumTillNow == n)
             {
                 ans.push_back(ds);
-                return;
+                // return;
             }
             return; 
         }
