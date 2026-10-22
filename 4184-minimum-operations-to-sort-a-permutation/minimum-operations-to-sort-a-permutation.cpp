@@ -1,13 +1,25 @@
 class Solution {
 public:
     int minOperations(vector<int>& nums) {
-        int n = nums.size(), shift = ranges::find(nums, 0) - nums.begin();
-        auto ring = [&](int k) { return nums[(shift + k) % n]; };  // the circle, read from 0
-        auto all = [&](auto holds) { return ranges::all_of(views::iota(0, n), holds); };
-        if (all([&](int k) { return ring(k) == k; }))  // counts up along the arrow
-            return min(shift, n - shift + 2);  // walk ahead, or turn, walk back, turn back
-        if (all([&](int k) { return ring(k) == (n - k) % n; }))  // counts up against the arrow
-            return min(shift + 2, n - shift);  // walk ahead and turn, or turn and walk back
-        return -1;
+        int n = nums.size();
+        int p = 0;
+        for (int i = 0; i < n; i++) {
+            if (nums[i] == 0) {
+                p = i;
+                break;
+            }
+        }
+
+        bool inc = true, dec = true;
+        for (int i = 0; i < n; i++) {
+            int next = nums[(i + 1) % n];
+            if (next != (nums[i] + 1) % n) inc = false;
+            if (next != (nums[i] - 1 + n) % n) dec = false;
+        }
+
+        int ans = INT_MAX;
+        if (inc) ans = min(ans, min(p, n - p + 2));
+        if (dec) ans = min(ans, min(p + 2, n - p));
+        return ans == INT_MAX ? -1 : ans;
     }
 };
