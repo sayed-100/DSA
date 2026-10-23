@@ -1,14 +1,14 @@
 class Solution {
 public:
     int sortPermutation(vector<int>& nums) {
-        int n = nums.size();
-        int res = INT_MAX;
+        int n = nums.size(), answer = -1;
+
         for (int i = 0; i < n; i++) {
-            if (nums[i] == i) {
-                continue;
+            if (nums[i] != i) {
+                answer &= nums[i];
             }
-            res &= nums[i];
         }
-        return res == INT_MAX ? 0 : res;
+
+        return answer == -1 ? 0 : answer;
     }
 };
