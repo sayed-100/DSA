@@ -1,41 +1,32 @@
 class Solution {
 public:
     int closedIsland(vector<vector<int>>& grid) {
-        int m = grid.size();
-        int n = grid[0].size();
-        int count = 0;
-        vector<vector<bool>> visit(m, vector<bool>(n));
-        for (int i = 0; i < m; i++) {
-            for (int j = 0; j < n; j++) {
-                if (grid[i][j] == 0 && !visit[i][j] && dfs(i, j, m, n, grid, visit)) {
-                    count++;
+        int m = grid.size(), n = grid[0].size();
+        auto dfs = [&](auto&& self, int i, int j) -> void {
+            if (i < 0 || i >= m || j < 0 || j >= n || grid[i][j] == 1) return;
+            grid[i][j] = 1;
+            self(self, i + 1, j);
+            self(self, i - 1, j);
+            self(self, i, j + 1);
+            self(self, i, j - 1);
+        };
+        for (int i = 0; i < m; ++i) {
+            if (grid[i][0] == 0) dfs(dfs, i, 0);
+            if (grid[i][n - 1] == 0) dfs(dfs, i, n - 1);
+        }
+        for (int j = 0; j < n; ++j) {
+            if (grid[0][j] == 0) dfs(dfs, 0, j);
+            if (grid[m - 1][j] == 0) dfs(dfs, m - 1, j);
+        }
+        int ans = 0;
+        for (int i = 1; i < m - 1; ++i) {
+            for (int j = 1; j < n - 1; ++j) {
+                if (grid[i][j] == 0) {
+                    ++ans;
+                    dfs(dfs, i, j);
                 }
             }
         }
-        return count;
-    }
-
-    bool dfs(int x, int y, int m, int n, vector<vector<int>>& grid, vector<vector<bool>>& visit) {
-        if (x < 0 || x >= m || y < 0 || y >= n) {
-            return false;
-        }
-        if (grid[x][y] == 1 || visit[x][y]) {
-            return true;
-        }
-
-        visit[x][y] = true;
-        bool isClosed = true;
-        vector<int> dirx {0, 1, 0, -1};
-        vector<int> diry {-1, 0, 1, 0};
-
-        for (int i = 0; i < 4; i++) {
-            int r = x + dirx[i];
-            int c = y + diry[i];
-            if (!dfs(r, c, m, n, grid, visit)) {
-                isClosed = false;
-            }
-        }
-
-        return isClosed;
+        return ans;
     }
 };
