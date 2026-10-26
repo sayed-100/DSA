@@ -27,6 +27,7 @@ public:
     bool exist(vector<vector<char>>& board, string word) {
         m = board.size(); //row
         n = board[0].size(); //column
+        if (word.size() > m * n) return false;
         for(int i = 0; i < m; i++)
         {
             for(int j = 0; j < n; j++)
