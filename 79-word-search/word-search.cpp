@@ -14,7 +14,7 @@ private:
         //explore all directions
         for (int k = 0; k < 4; k++) {
             if (find(board, i + dx[k], j + dy[k], idx + 1, word)) {
-                board[i][j] = temp;
+                // board[i][j] = temp;
                 return true;
             }
         }
