@@ -2,7 +2,8 @@ class Solution {
 private:
     int m;
     int n;
-    vector<vector<int>> directions{{1,0}, {-1,0}, {0,1}, {0,-1}};
+    int dx[4] = {1, -1, 0, 0};
+    int dy[4] = {0, 0, 1, -1};
     bool find(vector<vector<char>>& board, int i, int j, int idx, string &word)
     {
         if(idx == word.length()) return true;
@@ -11,12 +12,9 @@ private:
         char temp = board[i][j];
         board[i][j] = '$';
         //explore all directions
-        for(auto &dir : directions)
-        {
-            int new_i = i + dir[0];
-            int new_j = j + dir[1];
-            if(find(board, new_i, new_j, idx+1, word))
-            {
+        for (int k = 0; k < 4; k++) {
+            if (find(board, i + dx[k], j + dy[k], idx + 1, word)) {
+                // board[i][j] = temp;
                 return true;
             }
         }
