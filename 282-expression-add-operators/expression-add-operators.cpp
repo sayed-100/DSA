@@ -19,7 +19,7 @@ public:
         for(int j = i; j < s.size(); j++)
         {
             //handel '0' 
-            if(j > i && s[i] == '0') return;
+            if(j > i && s[i] == '0') break;
             string currStr = s.substr(i, j-i+1);
             long number = stol(currStr);
             if(i == 0)
