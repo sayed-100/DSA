@@ -2,8 +2,7 @@ class Solution {
 public:
     vector<string> ans;
     vector<string> addOperators(string num, int target) {
-        string path ="";
-        helper(num, target, 0, path, 0, 0);
+        helper(num, target, 0, "", 0, 0);
         return ans;
     }
     void helper(string s, int target, int i, string path, long eval, long prev)
